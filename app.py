@@ -10,11 +10,11 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 @app.route("/", methods=("GET", "POST"))
 def index():
     if request.method == "POST":
-        animal = request.form["animal"]
+        name = request.form["name"]
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=generate_prompt(animal),
-            temperature=1,
+            prompt=generate_prompt(name),
+            temperature=0.7,
         )
         return redirect(url_for("index", result=response.choices[0].text))
 
@@ -22,5 +22,15 @@ def index():
     return render_template("index.html", result=result)
 
 
-def generate_prompt(animal):
-    return "Suggest five names for an Anime Woman Character, you should use Olivia F."
+def generate_prompt(name):
+    return """Suggest three anime names for the given person name.
+ Name: Daniel
+ Names: ShangDanielChi, DaniPo, YiwitoDaniel
+ Name: Edgar
+ Names: EdgarAstroBoy, EdgarKenshin, AckerEdgarMan
+ Name: John
+ Names: YagamiJohn, JohnShin, JohnKusanagi
+ Name: {}
+ Names:""".format(
+         name.capitalize()
+    )
